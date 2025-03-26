@@ -5,6 +5,11 @@ on:
 
   # to run this workflow manually from the Actions tab
   workflow_dispatch:
+    inputs:
+      use_local_llm:
+        description: "Use local LLM (Gemma3)"
+        required: false
+        default: "false"
 
 jobs:
   sync-to-hub:
@@ -14,7 +19,9 @@ jobs:
         with:
           fetch-depth: 0
           lfs: true
-      - name: Add remote 
+      - name: Set environment variable for local LLM
+        run: echo "USE_LOCAL_LLM=${{ github.event.inputs.use_local_llm }}" >> $GITHUB_ENV
+      - name: Add remote
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
         run: git remote add space https://kailashsp:$HF_TOKEN@huggingface.co/spaces/kailashsp/SELF-DISCOVER
